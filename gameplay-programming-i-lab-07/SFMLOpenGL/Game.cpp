@@ -6,7 +6,7 @@ bool updatable = false;
 
 Game::Game() : window(VideoMode(800, 600), "OpenGL Cube")
 {
-	index = glGenLists(1);
+	index = glGenLists(2);
 }
 
 Game::~Game(){}
@@ -65,10 +65,10 @@ void Game::initialize()
 	m_translations[2] = { 1.0f, 1.0f, 1.0f };
 	m_translations[3] = { 1.0f, 1.0f, 1.0f };
 
-	m_translations[4] = { 0.0f, 0.0f, 0.0f };
-	m_translations[5] = { 0.0f, 0.0f, 0.0f };
-	m_translations[6] = { 0.0f, 0.0f, 0.0f };
-	m_translations[7] = { 0.0f, 0.0f, 0.0f };
+	m_translations[4] = { 1.0f, 1.0f, 1.0f };
+	m_translations[5] = { 1.0f, 1.0f, 1.0f };
+	m_translations[6] = { 1.0f, 1.0f, 1.0f };
+	m_translations[7] = { 1.0f, 1.0f, 1.0f };
 
 
 	m_result[0] = m_corners[0] + m_translations[0];
@@ -84,12 +84,12 @@ void Game::initialize()
 
 void Game::update()
 {
-	
+	// Translate up
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			if (m_corners[i].z >= 0)
+			if (m_translations[i].z >= 0)
 			{
 				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0, 0.01 ,0 }) *  m_translations[i]);			// Rotate them all
 			}
@@ -101,6 +101,7 @@ void Game::update()
 		}
 	}
 
+	// Translate Down
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
 		for (int i = 0; i < 8; i++)
@@ -122,11 +123,11 @@ void Game::update()
 		{
 			if (m_translations[i].z >= 0)
 			{
-				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0.01,0 ,0 }) *  m_corners[i]);			// Rotate them all
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0.01,0 ,0 }) *  m_translations[i]);			// Rotate them all
 			}
 			else
 			{
-				m_translations[i] = (MyMatrix3::translationMinus(MyVector3{0.01, 0 ,0 }) *  m_corners[i]);
+				m_translations[i] = (MyMatrix3::translationMinus(MyVector3{0.01, 0 ,0 }) *  m_translations[i]);
 			}
 		}
 	}
@@ -158,11 +159,25 @@ void Game::update()
 			m_corners[i] = (MyMatrix3::rotationX(0.01) * m_corners[i]);			// Rotate them all
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))		// Should be Y, but C is closer to the other 1s
 	{
 		for (int i = 0; i < 8; i++)
 		{
 			m_corners[i] = (MyMatrix3::rotationY(0.01) * m_corners[i]);			// Rotate them all
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))		// Should be Y, but C is closer to the other 1s
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			m_corners[i] = (MyMatrix3::scale(1.01) * m_corners[i]);			// Rotate them all
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))		// Should be Y, but C is closer to the other 1s
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			m_corners[i] = (MyMatrix3::scale(0.99) * m_corners[i]);			// Rotate them all
 		}
 	}
 	m_result[0] = m_corners[0] + m_translations[0];
@@ -175,6 +190,18 @@ void Game::update()
 	m_result[6] = m_corners[6] + m_translations[6];
 	m_result[7] = m_corners[7] + m_translations[7];
 
+
+	// 4, 5, 6 ,7
+	if (((m_corners[6] - m_corners[7]).crossProduct((m_corners[3] - m_corners[7])).z > 0))
+	{
+		showFace[0] = true;
+	}
+	else
+	{
+		showFace[0] = false;
+	}
+
+	
 	glNewList(index, GL_COMPILE);
 	glBegin(GL_QUADS);
 	{
@@ -212,61 +239,35 @@ void Game::update()
 		glVertex3f(m_result[1].x, m_result[1].y, m_result[1].z);
 		glVertex3f(m_result[5].x, m_result[5].y, m_result[5].z);
 
-		//Front Face
+		////Front Face
+	
+		//glColor3f(0.0f, 1.0f, 0.0f);
+		//glVertex3f(m_result[4].x, m_result[4].y, m_result[4].z);
+		//glVertex3f(m_result[5].x, m_result[5].y, m_result[5].z);
+		//glVertex3f(m_result[6].x, m_result[6].y, m_result[6].z);
+		//glVertex3f(m_result[7].x, m_result[7].y, m_result[7].z);
+
+	}
+	glEnd();
+	glEndList();
+
+	int four = 2;
+	if (four == 2)
+	{
+		glNewList(index + 1, GL_COMPILE);
+		glBegin(GL_QUADS);
+		{
 		glColor3f(0.0f, 1.0f, 0.0f);
 		glVertex3f(m_result[4].x, m_result[4].y, m_result[4].z);
 		glVertex3f(m_result[5].x, m_result[5].y, m_result[5].z);
 		glVertex3f(m_result[6].x, m_result[6].y, m_result[6].z);
 		glVertex3f(m_result[7].x, m_result[7].y, m_result[7].z);
 
-
-
-		//Complete the faces of the Cube
-	}
-	glEnd();
-	glEndList();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	elapsed = clock.getElapsedTime();
-
-	if (elapsed.asSeconds() >= 1.0f)
-	{
-		clock.restart();
-
-		if (!updatable)
-		{
-			updatable = true;
 		}
-		else
-			updatable = false;
+		glEnd();
+		glEndList();
 	}
 
-	if (updatable)
-	{
-		rotationAngle += 0.005f;
-
-		if (rotationAngle > 360.0f)
-		{
-			rotationAngle -= 360.0f;
-		}
-	}
-	
-	cout << "Update up" << endl;
 }
 
 void Game::draw()
@@ -277,10 +278,11 @@ void Game::draw()
 
 	cout << "Drawing Cube " << endl;
 	glLoadIdentity();
-	glTranslatef(0, -3, -20);
-	glRotatef(20, 1, 0, 0); // Rotates the camera on Y Axis
+	glTranslatef(0, -3, -20);			// Give a nice Camera angle
+	glRotatef(20, 1, 0, 0);			 // Rotates the camera on down alone the Axis to give a dynamic view
 
 	glCallList(1);
+	glCallList(2);
 
 	window.display();
 

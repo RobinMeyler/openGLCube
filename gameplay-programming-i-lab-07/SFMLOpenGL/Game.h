@@ -34,5 +34,6 @@ private:
 	MyVector3 m_corners[8];
 	MyVector3 m_translations[8];
 	MyVector3 m_result[8];
+	bool showFace[6] = { false, false, false, false, false, false };
 	float rotationAngle = 30.0f;
 };
