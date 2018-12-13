@@ -3,11 +3,7 @@
 /// Name: Robin Meyler
 /// Login: C00231699
 /// Date: Jan - Feb 2018
-/// Estimated time : Stage2: 1 hour, Stage3: 2 hours, Stage4: 1 hour
-/// Time taken: Stage2: 1 hour, Stage3: 2 hours, Stage4: 1 hour
-/// 
-///
-/// 
+
 /// </summary>
 #include "MyVector3.h"
 #include <string.h>

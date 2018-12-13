@@ -2,11 +2,14 @@
 
 bool updatable = false;
 
+// Robin Meyler
+// Open GL Cube, operations - Lab6  + lab7 - Gmaeplay Programming
+// December 2018
 
 
 Game::Game() : window(VideoMode(800, 600), "OpenGL Cube")
 {
-	index = glGenLists(2);
+	index = glGenLists(1);
 }
 
 Game::~Game(){}
@@ -95,9 +98,8 @@ void Game::update()
 			}
 			else
 			{
-				m_translations[i] = (MyMatrix3::translationMinus(MyVector3{ 0, 0.01 ,0 }) *  m_translations[i]);
-			}
-			
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0, -0.01 ,0 }) *  m_translations[i]);
+			}	
 		}
 	}
 
@@ -112,9 +114,8 @@ void Game::update()
 			}
 			else
 			{
-				m_translations[i] = (MyMatrix3::translationMinus(MyVector3{ 0, -0.01 ,0 }) *  m_translations[i]);
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0, 0.01 ,0 }) *  m_translations[i]);
 			}
-
 		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -123,11 +124,11 @@ void Game::update()
 		{
 			if (m_translations[i].z >= 0)
 			{
-				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0.01,0 ,0 }) *  m_translations[i]);			// Rotate them all
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0.01, 0 ,0 }) *  m_translations[i]);			
 			}
 			else
 			{
-				m_translations[i] = (MyMatrix3::translationMinus(MyVector3{0.01, 0 ,0 }) *  m_translations[i]);
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ -0.01, 0 ,0 }) *  m_translations[i]);
 			}
 		}
 	}
@@ -137,11 +138,11 @@ void Game::update()
 		{
 			if (m_translations[i].z >= 0)
 			{
-				m_translations[i] = (MyMatrix3::translation(MyVector3{ -0.01,0 ,0 }) *  m_translations[i]);			// Rotate them all
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ -0.01,0 ,0 }) *  m_translations[i]);			
 			}
 			else
 			{
-				m_translations[i] = (MyMatrix3::translationMinus(MyVector3{ -0.01, 0 ,0 }) *  m_translations[i]);
+				m_translations[i] = (MyMatrix3::translation(MyVector3{ 0.01, 0 ,0 }) *  m_translations[i]);
 			}
 		}
 	}
@@ -166,14 +167,14 @@ void Game::update()
 			m_corners[i] = (MyMatrix3::rotationY(0.01) * m_corners[i]);			// Rotate them all
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))		// Should be Y, but C is closer to the other 1s
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))		
 	{
 		for (int i = 0; i < 8; i++)
 		{
 			m_corners[i] = (MyMatrix3::scale(1.01) * m_corners[i]);			// Rotate them all
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))		// Should be Y, but C is closer to the other 1s
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))		
 	{
 		for (int i = 0; i < 8; i++)
 		{
@@ -190,18 +191,6 @@ void Game::update()
 	m_result[6] = m_corners[6] + m_translations[6];
 	m_result[7] = m_corners[7] + m_translations[7];
 
-
-	// 4, 5, 6 ,7
-	if (((m_corners[6] - m_corners[7]).crossProduct((m_corners[3] - m_corners[7])).z > 0))
-	{
-		showFace[0] = true;
-	}
-	else
-	{
-		showFace[0] = false;
-	}
-
-	
 	glNewList(index, GL_COMPILE);
 	glBegin(GL_QUADS);
 	{
@@ -239,34 +228,17 @@ void Game::update()
 		glVertex3f(m_result[1].x, m_result[1].y, m_result[1].z);
 		glVertex3f(m_result[5].x, m_result[5].y, m_result[5].z);
 
-		////Front Face
+		//Front Face
 	
-		//glColor3f(0.0f, 1.0f, 0.0f);
-		//glVertex3f(m_result[4].x, m_result[4].y, m_result[4].z);
-		//glVertex3f(m_result[5].x, m_result[5].y, m_result[5].z);
-		//glVertex3f(m_result[6].x, m_result[6].y, m_result[6].z);
-		//glVertex3f(m_result[7].x, m_result[7].y, m_result[7].z);
-
-	}
-	glEnd();
-	glEndList();
-
-	int four = 2;
-	if (four == 2)
-	{
-		glNewList(index + 1, GL_COMPILE);
-		glBegin(GL_QUADS);
-		{
 		glColor3f(0.0f, 1.0f, 0.0f);
 		glVertex3f(m_result[4].x, m_result[4].y, m_result[4].z);
 		glVertex3f(m_result[5].x, m_result[5].y, m_result[5].z);
 		glVertex3f(m_result[6].x, m_result[6].y, m_result[6].z);
 		glVertex3f(m_result[7].x, m_result[7].y, m_result[7].z);
 
-		}
-		glEnd();
-		glEndList();
 	}
+	glEnd();
+	glEndList();
 
 }
 
@@ -278,11 +250,10 @@ void Game::draw()
 
 	cout << "Drawing Cube " << endl;
 	glLoadIdentity();
-	glTranslatef(0, -3, -20);			// Give a nice Camera angle
+	glTranslatef(0, 0, -20);			// Give a nice Camera angle
 	glRotatef(20, 1, 0, 0);			 // Rotates the camera on down alone the Axis to give a dynamic view
 
 	glCallList(1);
-	glCallList(2);
 
 	window.display();
 

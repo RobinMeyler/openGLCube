@@ -1,11 +1,7 @@
 /// Matrix 3 Class
 /// Name: Robin Meyler
 /// Login: C00231699
-/// Estimated time: 3/4 hours
-/// Time taken: 4 hours coding
-///				2 hours tests/ tidying
-/// 
-/// 
+
 /// 
 /// </summary>
 #include "Matrix3.h"
